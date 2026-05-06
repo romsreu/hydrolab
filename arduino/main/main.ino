@@ -239,7 +239,25 @@ double error_actual = 0, integral = 0;
 bool fail_PID = 0;
 
 
-
+// =====================================================
+//              PROTOTIPOS DE FUNCIONES
+// =====================================================
+void vent_config();
+void bombas_config();
+void LED_config();
+void caudalimetro_config();
+void temp_config();
+void bombita_on(uint8_t, uint8_t, int&, float&, bool&, float);
+void LED(unsigned long, unsigned long);
+void temp_control(float, unsigned long);
+void Wtemp_read(unsigned long);
+void bomba(unsigned long, unsigned long);
+void vent(bool);
+void pHcontrol(unsigned long);
+void ECcontrol(unsigned long);
+void display_update();
+float pH_read();
+float EC_read();
 
 // ===============================================================================================================================================================
 // ===============================================================================================================================================================
