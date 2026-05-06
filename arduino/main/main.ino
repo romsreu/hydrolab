@@ -68,6 +68,9 @@ float vent_time   = 0;      // [ms] Duración de ventilación (configurable si s
 
 const float MIN_TO_MILLISECONDS = 60000;
 
+// ---- Tiempo general ----
+unsigned long currentMillis = 0; // Variable de tiempo general, se actualiza al inicio del loop
+
 // ---- Impresión Serial ----
 unsigned long previousMillis_print = 0;
 unsigned long interval_print       = 1 * MIN_TO_MILLISECONDS; // [ms] Intervalo entre prints en consola (1 seg)
@@ -105,7 +108,11 @@ unsigned long previousMillis_bomba = 0;
 unsigned long interval_bomba_on    = 1 * MIN_TO_MILLISECONDS;   // [ms] Tiempo encendida (el primer valor representa los minutos)
 unsigned long interval_bomba_off   = 2 * MIN_TO_MILLISECONDS;   // [ms] Tiempo apagada (el primer valor representa los minutos)
 
-
+// ---- Display LCD ----
+unsigned long previousMillis_display = 0;
+const unsigned long interval_display = 8000;
+int screenIndex = 0;
+const int totalScreens = 4;
 // =====================================================
 // =====================================================
 // ================   ¡NO MODIFICAR!   =================
@@ -131,7 +138,9 @@ unsigned long interval_bomba_off   = 2 * MIN_TO_MILLISECONDS;   // [ms] Tiempo a
 #include <OneWire.h>            // Sensor de temperatura DS18B20
 #include <DallasTemperature.h>  // Librería para DS18B20
 #include <ArduinoJson.h>        // Manejo de datos en formato JSON
-
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x3F, 20, 4);
 
 
 
@@ -258,6 +267,7 @@ void ECcontrol(unsigned long);
 void display_update();
 float pH_read();
 float EC_read();
+void display_update();
 
 // ===============================================================================================================================================================
 // ===============================================================================================================================================================
@@ -265,7 +275,12 @@ float EC_read();
 
 void setup() {
   Serial.begin(9600);
-  
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Armario Hidroponico");
+  lcd.setCursor(0, 1);
+  lcd.print("Iniciando...");
   //Poner todos los vent como salidas y setearlos en LOW
   vent_config();
   //Poner todas las bombas como salidas y setearlas en LOW
@@ -292,8 +307,21 @@ void setup() {
 }
 
 void loop() {
+  currentMillis = millis(); // Actualizar tiempo al inicio de cada iteración
   //Ejemplos de cada función:
+  switch (screenIndex) {
+    case 0: showScreen1(); break;
+    case 1: showScreen2(); break;
+    case 2: showScreen3(); break;
+    case 3: showScreen4(); break;
+  }
 
+  if (currentMillis - previousMillis_display >= interval_display) {
+    previousMillis_display = currentMillis;
+    screenIndex++;
+    if (screenIndex >= totalScreens) screenIndex = 0;
+    lcd.clear();
+  }
   LED(interval_LED_on, interval_LED_off); //Se le pasa el tiempo que tiene que estar encendido y apagado, puede modificarse.             OK
   temp_control(limit_temp, interval_temp); //Se le pasa cada cuanto tiempo medir, puede modificarse.                                     OK - Sensores y ventiladores. VER PID
   Wtemp_read(interval_Wtemp); //Se le pasa cada cuanto tiempo medir, puede modificarse.                                                  OK                                             
@@ -306,10 +334,10 @@ void loop() {
   //b4_on(b4_cant); //Se le pasa cuanto volumen tienen que suministrar. Debería salir de un cálculo por las mediciones de EC.            OK - bomba y cauda andan - Falta verificar ecuación
   
   
-  unsigned long currentMillis_print = millis();
+  unsigned long currentMillis = millis();
   //Función para imprimir parámetros de interes. No superponer con el funcionamiento de la comunicación
-  if (currentMillis_print - previousMillis_print >= interval_print) {
-    previousMillis_print = currentMillis_print;
+  if (currentMillis - previousMillis_print >= interval_print) {
+    previousMillis_print = currentMillis;
     //  Serial.print("LED: ");
     //  Serial.print(LED_state);
     //  Serial.print(" Temp_int: ");
@@ -772,4 +800,79 @@ void ECcontrol(unsigned long EC_time) {
       EC_samples = 0;
     }
   }
+}
+
+void showScreen1() {
+  String tempStr;
+
+  auto printRight = [&](const char* label, float val, int row) {
+    tempStr = String(val, 1) + " C";
+    if (tempStr.length() > 19) tempStr = tempStr.substring(0, 19);
+    lcd.setCursor(0, row);
+    lcd.print(label);
+    lcd.setCursor(19 - tempStr.length() + 1, row);
+    lcd.print(tempStr);
+  };
+
+  printRight("Temp Interior:", temp_value_int, 0);
+  printRight("Temp Exterior:", temp_value_ext, 1);
+  printRight("Solucion Sup: ", Wtemp1_value,   2);
+  printRight("Solucion Inf: ", Wtemp0_value,   3);
+}
+
+void showScreen2() {
+  String valStr;
+
+  lcd.setCursor(0, 0);
+  lcd.print("     -- pH --       ");
+
+  valStr = "Valor: " + String(pH_value, 2);
+  lcd.setCursor(0, 1);
+  lcd.print(valStr);
+
+  valStr = "Min:   " + String(pH_low, 2);
+  lcd.setCursor(0, 2);
+  lcd.print(valStr);
+
+  valStr = "Max:   " + String(pH_high, 2);
+  lcd.setCursor(0, 3);
+  lcd.print(valStr);
+}
+
+void showScreen3() {
+  String valStr;
+
+  lcd.setCursor(0, 0);
+  lcd.print("     -- EC --       ");
+
+  valStr = "Valor: " + String(EC_value, 2) + " mS/cm";
+  lcd.setCursor(0, 1);
+  lcd.print(valStr);
+
+  valStr = "Min:   " + String(EC_low, 2);
+  lcd.setCursor(0, 2);
+  lcd.print(valStr);
+
+  valStr = "Max:   " + String(EC_high, 2);
+  lcd.setCursor(0, 3);
+  lcd.print(valStr);
+}
+
+void showScreen4() {
+  String valStr;
+
+  lcd.setCursor(0, 0);
+  lcd.print("  -- Intervalos --  ");
+
+  valStr = "Bomba: " + String(interval_bomba_on / 60000) + "/" + String(interval_bomba_off / 60000) + " min";
+  lcd.setCursor(0, 1);
+  lcd.print(valStr);
+
+  valStr = "LED:   " + String(interval_LED_on / 60000) + "/" + String(interval_LED_off / 60000) + " min";
+  lcd.setCursor(0, 2);
+  lcd.print(valStr);
+
+  valStr = "Temp:  " + String(interval_temp / 60000) + " min";
+  lcd.setCursor(0, 3);
+  lcd.print(valStr);
 }
