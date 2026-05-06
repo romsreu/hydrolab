@@ -1,6 +1,4 @@
 
-
-//fghjkl.
 /**************************************************************
  *                     PROYECTO HIDROPONIA
  *------------------------------------------------------------
@@ -32,42 +30,10 @@
  *
  **************************************************************/
 
-
-
-
-
-// =====================================================
-//                  MAPA DE PINES - HARDWARE
-// =====================================================
-// | Dispositivo           | Nombre     | Pin | Descripción        |
-// ----------------------------------------------------------------
-// | Ventilador LED        | v0         | 29  | Ventilador LED     |
-// | Ventilador 1          | v1         | 23  | Ventilador lateral |
-// | Ventilador 2          | v2         | 25  | Ventilador lateral |
-// | Ventilador 3          | v3         | 27  | Ventilador lateral |
-// ----------------------------------------------------------------
-// | Bomba principal       | b0         | 43  | Tanque principal   |
-// | Bombita tanque 1      | b1         | 31  | Riego tanque 1     |
-// | Bombita tanque 2      | b2         | 33  | Riego tanque 2     |
-// | Bombita tanque 3      | b3         | 35  | Riego tanque 3     |
-// | Bombita tanque 4      | b4         | 37  | Riego tanque 4     |
-// ----------------------------------------------------------------
-// | LED estante arriba    | LED1       | 39  | Iluminación        |
-// | LED estante abajo     | LED2       | 41  | Iluminación        |
-// ----------------------------------------------------------------
-// | Caudalímetro 1        | c1         | 45  | Tanque 1           |
-// | Caudalímetro 2        | c2         | 47  | Tanque 2           |
-// | Caudalímetro 3        | c3         | 49  | Tanque 3           |
-// | Caudalímetro 4        | c4         | 51  | Tanque 4           |
-// ----------------------------------------------------------------
-// | DHT22 exterior        | DHTPIN_ext |  2  | Temp/Hum exterior  |
-// | DHT22 interior        | DHTPIN_int |  3  | Temp/Hum interior  |
-// | DS18B20               | Wtemp_pin  |  4  | Temp solución      |
-// ----------------------------------------------------------------
-// | LDR                   | LDRpin     | A0  | Luz ambiente       |
-// | Sensor pH             | pHPin      | A1  | Medición pH        |
-// | Sensor EC             | ECPin      | A2  | Medición EC        |
-// =====================================================
+/* Mapa de pines:
+   https://hydrolabutn.netlify.app/
+   También se encuentra en el documento LAHI4.0.pdf dentro de
+   https://github.com/romsreu/hydrolab/tree/main/docs */
 
 // Pinout de referencia:
 // https://www.electronicshub.org/wp-content/uploads/2021/01/Arduino-Mega-Pinout.jpg
