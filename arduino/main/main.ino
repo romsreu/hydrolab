@@ -299,12 +299,11 @@ void loop() {
   temp_control(limit_temp, interval_temp);
   Wtemp_read(interval_Wtemp);
   bomba(interval_bomba_on, interval_bomba_off);
-  //pHcontrol(interval_pH);
-  //ECcontrol(interval_EC);
-  //b1_on(b1_cant);
-  //b2_on(b2_cant);
-  //b3_on(b3_cant);
-  //b4_on(b4_cant);
+  //hasta arriba, todo está aparentemente funcional.
+
+  //a chequear el lunes:
+  pHcontrol(interval_pH);
+  ECcontrol(interval_EC);
 
   if (currentMillis - previousMillis_print >= interval_print) {
     previousMillis_print = currentMillis;

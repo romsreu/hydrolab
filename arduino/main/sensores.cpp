@@ -104,9 +104,12 @@ void pHcontrol(unsigned long pH_time) {
 
     if (abs(pH_samples) >= 3) {
       if (pH_samples > 0) {
-        bombita_on(b1, c1, pulsos1, vol1, b1_state, 100.0);
+        //el recipiente donde están las bombitas sumergibles no tiene liquido aún.
+        //bombita_on debería detectar si hay líquido en el, implicaría un sensor adicional, pero
+        //ayudaría a prevenir que se dañen las bombitas.
+        //bombita_on(b1, c1, pulsos1, vol1, b1_state, 100.0);
       } else {
-        bombita_on(b2, c2, pulsos2, vol2, b2_state, 100.0);
+        //bombita_on(b2, c2, pulsos2, vol2, b2_state, 100.0);
       }
       pH_samples = 0;
     }
@@ -129,9 +132,12 @@ void ECcontrol(unsigned long EC_time) {
 
     if (abs(EC_samples) >= 3) {
       if (EC_samples > 0) {
-        bombita_on(b3, c3, pulsos3, vol3, b3_state, 10.0);
+        //el recipiente donde están las bombitas sumergibles no tiene liquido aún.
+        //bombita_on debería detectar si hay líquido en el, implicaría un sensor adicional, pero
+        //ayudaría a prevenir que se dañen las bombitas.
+        //bombita_on(b3, c3, pulsos3, vol3, b3_state, 10.0);
       } else {
-        bombita_on(b4, c4, pulsos4, vol4, b4_state, 10.0);
+        //bombita_on(b4, c4, pulsos4, vol4, b4_state, 10.0);
       }
       EC_samples = 0;
     }
