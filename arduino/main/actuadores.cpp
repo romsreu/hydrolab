@@ -11,7 +11,7 @@
  ********************************************************************/
 
 #include "actuadores.h"
-
+#include "config.h"
 extern const float VOLUMEN_POR_PULSO;
 
 void vent_config() {

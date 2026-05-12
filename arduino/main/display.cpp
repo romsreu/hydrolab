@@ -1,5 +1,5 @@
 #include "display.h"
-
+#include "config.h"
 void showScreen1() {
   String tempStr;
 

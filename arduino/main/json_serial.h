@@ -30,8 +30,6 @@ extern unsigned long interval_bomba_on, interval_bomba_off;
 extern unsigned long interval_LED_on, interval_LED_off;
 extern unsigned long interval_pH, interval_EC;
 extern unsigned long interval_temp, interval_Wtemp;
-extern const long interval_LDR;
-extern const size_t JSON_BUFFER_SIZE;
 
 void enviar_json();
 

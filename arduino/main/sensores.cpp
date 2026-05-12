@@ -12,7 +12,7 @@
 
 #include "sensores.h"
 #include "actuadores.h"
-
+#include "config.h"
 extern bool fail_PID;
 extern bool b1_state, b2_state, b3_state, b4_state;
 extern float vol1, vol2, vol3, vol4;

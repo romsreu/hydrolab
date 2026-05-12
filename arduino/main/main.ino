@@ -51,7 +51,6 @@ float EC_value    = 0;      // [mS/cm] Valor medido
 
 float vent_time   = 0;      // [ms] Duración de ventilación
 
-
 /********************************************************************
  **************   VARIABLES DE TIEMPO Y MUESTREO   ******************
  *******************************************************************/
@@ -93,7 +92,7 @@ unsigned long interval_Wtemp       = 1 * MIN_TO_MILLISECONDS;
 /********************   LUZ AMBIENTE (LDR)   ************************/
 
 unsigned long previousMillis_LDR   = 0;
-const long interval_LDR            = 15 * MIN_TO_MILLISECONDS; 
+const long interval_LDR = 900000;
 
 /**************************   LEDs   ********************************/
 
@@ -138,40 +137,7 @@ LiquidCrystal_I2C lcd(0x3F, 20, 4);
 #include "sensores.h"
 #include "actuadores.h"
 #include "json_serial.h"
-
-/********************************************************************
- *********************  DECLARACIÓN PINES   *************************
- *******************************************************************/
-
-/********************   SALIDAS DIGITALES   ************************/
-
-#define v1   23  // Ventilador 1 (columna izquierda)
-#define v2   25  // Ventilador 2 (columna central)
-#define v3   27  // Ventilador 3 (columna derecha)
-#define v0   29  // Ventilador LED
-#define b1   31  // Bombita tanque 1
-#define b2   33  // Bombita tanque 2
-#define b3   35  // Bombita tanque 3
-#define b4   37  // Bombita tanque 4
-#define LED1 39  // LED estante arriba
-#define LED2 41  // LED estante abajo
-#define b0   43  // Bomba principal
-
-/********************   ENTRADAS DIGITALES   ***********************/
-
-#define c1 45 // Caudalímetro 1
-#define c2 47 // Caudalímetro 2
-#define c3 49 // Caudalímetro 3
-#define c4 51 // Caudalímetro 4  
-
-/************************   SENSORES   ******************************/
-
-#define DHTPIN_ext 2   // DHT22 exterior
-#define DHTPIN_int 3   // DHT22 interior
-#define Wtemp_pin  4   // DS18B20 (dos conectados al mismo pin)
-#define LDRpin     A0  // Sensor LDR (iluminación)
-#define pHPin      A1  // Sensor pH (simulado con potenciómetro)
-#define ECPin      A2  // Sensor EC (simulado con potenciómetro)
+#include "config.h"
 
 
 /********************************************************************
@@ -196,10 +162,6 @@ int nivelIluminacion = 0;
 
 OneWire oneWire(Wtemp_pin);
 DallasTemperature DS18B20(&oneWire);
-
-/**************************   JSON   *******************************/
-
-const size_t JSON_BUFFER_SIZE = JSON_OBJECT_SIZE(50);
 
 /***************************   pH   ********************************/
 
@@ -280,7 +242,8 @@ void setup() {
 
 void loop() {
   currentMillis = millis();
-  
+  pH_value = pH_read();
+  EC_value = EC_read();
   switch (screenIndex) {
     case 0: showScreen1(); break;
     case 1: showScreen2(); break;
@@ -302,8 +265,8 @@ void loop() {
   //hasta arriba, todo está aparentemente funcional.
 
   //a chequear el lunes:
-  pHcontrol(interval_pH);
-  ECcontrol(interval_EC);
+  //pHcontrol(interval_pH);
+  //ECcontrol(interval_EC);
 
   if (currentMillis - previousMillis_print >= interval_print) {
     previousMillis_print = currentMillis;

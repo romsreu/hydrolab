@@ -11,9 +11,10 @@
  ********************************************************************/
 
 #include "json_serial.h"
+#include "config.h"
 
 void enviar_json() {
-  StaticJsonDocument<JSON_BUFFER_SIZE> doc;
+  StaticJsonDocument<JSON_BUFFER_SIZE_VAL> doc;
 
   // Temperaturas y humedades
   doc["temperatura_interior"]              = temp_value_int;
@@ -44,7 +45,7 @@ void enviar_json() {
   doc["intervalo_control_ce"]              = interval_EC;
   doc["intervalo_control_temperatura_aire"]    = interval_temp;
   doc["intervalo_control_temperatura_solucion"] = interval_Wtemp;
-  doc["intervalo_control_luz"]             = interval_LDR;
+  doc["intervalo_control_luz"]             = INTERVAL_LDR;
 
   // Estados
   doc["led_estante_superior_estado"]       = LED_state;
