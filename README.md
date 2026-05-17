@@ -1,14 +1,15 @@
-<table align="center">
-  <tr>
-    <td style="padding-right: 10px;">
-      <img src="assets/logo.svg" width="300"/>
-    </td>
-    <td>
-      <h2 style="margin: 0;">Sistema de Vivero Hidroponico</h2>
-      <p style="margin: 0; font-size: 14px;">Universidad Tecnologica Nacional</p>
-    </td>
-  </tr>
-</table>
+<img width="1983" height="793" alt="banner" src="https://github.com/user-attachments/assets/c605f8f5-37e1-4dd0-993f-08d9b664e9f6" />
 
-Sistema hidropónico indoor de tipo NFT (Nutrient Film Technique) pensado para hacer viable el cultivo en zonas donde las condiciones del suelo o el clima no son favorables. Permite cultivar en entornos cerrados y controlados, sin depender de la tierra, optimizando el uso del agua y los nutrientes.
-El sistema está alojado en un armario metálico autocontenido con dos estantes de cultivo, iluminación LED, ventilación forzada, control automático de temperatura, pH y conductividad eléctrica, y dosificación de nutrientes. Toda la información del sistema es registrada y procesada para permitir el monitoreo y la toma de decisiones basada en datos.
+
+
+Sistema hidropónico indoor de tipo Nutrient Film Technique diseñado para facilitar el cultivo en entornos donde las condiciones del suelo o el clima no son favorables. El sistema permite producir en espacios cerrados y controlados, optimizando el uso del agua y los nutrientes sin depender de la tierra.
+
+Está montado dentro de un armario metálico autocontenido con dos niveles de cultivo, iluminación LED, ventilación forzada y control automático de variables como temperatura, pH y conductividad eléctrica. Además, incorpora dosificación de nutrientes y registro continuo de datos para monitoreo y análisis del funcionamiento del sistema.
+
+El proyecto utiliza Arduino y Raspberry Pi para la automatización, adquisición de datos y control del sistema, incluyendo monitoreo remoto, almacenamiento histórico de variables y operación manual o automática de actuadores.
+
+Este repositorio reúne el código fuente, la documentación técnica, esquemas electrónicos y herramientas relacionadas con el desarrollo del laboratorio hidropónico realizado en la UTN Facultad Regional Santa Fe.
+
+## Modelo digital y visualización
+
+El proyecto también incluye un [modelo digital interactivo](https://github.com/romsreu/hydrolab-twin) desarrollado con Onshape y Godot, junto con una aplicación Android para monitoreo y visualización remota del sistema.
