@@ -12,4 +12,4 @@ Este repositorio reúne el código fuente, la documentación técnica, esquemas 
 
 ## Modelo digital y visualización
 
-El proyecto también incluye un [modelo digital interactivo](https://github.com/romsreu/hydrolab-twin) desarrollado con Onshape y Godot, junto con una aplicación Android para monitoreo y visualización remota del sistema.
+El proyecto también incluye un [modelo digital interactivo](https://github.com/romsreu/hydrolab-twin) creado con Onshape y Godot.
