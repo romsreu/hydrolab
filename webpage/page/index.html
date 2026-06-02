@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Laboratorio Autocontenido Hidropónico de Industria 4.0 — LAHI 4.0</title>
+<title>LAHI 4.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="icon.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,11 +15,13 @@
 
   <!-- ══ TOPBAR ══ -->
   <header class="topbar">
+    <a class="topbar-home-link" href="./"><img class="topbar-icon" src="icon.png" alt="Inicio"></a>
     <span class="topbar-brand">
       Laboratorio Autocontenido Hidropónico de Industria 4.0
     </span>
     <div class="topbar-sep"></div>
-    <span class="topbar-desc">Visualizador educativo</span>
+    <span class="topbar-desc">Visualizador</span>
+    <a class="topbar-dashboard-btn" href="dashboard.html">Dashboard</a>
     <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo">
       <!-- moon: visible en modo claro -->
       <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
@@ -39,6 +42,12 @@
       <div class="viz-overlay-dot"></div>
       <span class="viz-overlay-text" id="viz-overlay-text"></span>
     </div>
+    <div class="viz-help" id="viz-help">
+      <button class="viz-help-btn" id="viz-help-btn" aria-label="Información sobre la simulación">?</button>
+      <div class="viz-help-tooltip" id="viz-help-tooltip">
+        La simulación 3D actualiza su estado dependiendo de los últimos valores sensados.
+      </div>
+    </div>
   </div>
 
   <!-- ══ SIDE PANEL ══ -->
@@ -55,11 +64,12 @@
 
       <!-- ── CÓMO FUNCIONA ── -->
       <div class="pane active" id="pane-como-funciona">
-        <p class="pane-subtitle">§ 01 — Nutrient Film Technique</p>
-        <p class="pane-title">¿Cómo funciona el sistema NFT?</p>
+        <p class="pane-title">¿Cómo funciona el sistema?</p>
 
         <div class="nft-intro">
-          La técnica <strong>NFT (Nutrient Film Technique)</strong> hace circular una fina película continua de solución nutritiva sobre las raíces de las plantas. Éstas crecen en canales inclinados: la parte inferior de las raíces toca el agua, mientras la superior respira el aire. El sistema es <strong>de ciclo cerrado</strong>: el agua no consumida regresa al depósito y vuelve a circular, reduciendo el consumo hídrico hasta un <strong>90 %</strong> respecto al cultivo convencional.
+          El sistema hidropónico utilizado consiste en una serie de canales de cultivo conectados a un depósito de solución nutritiva. Una bomba impulsa periódicamente el agua hacia los canales, donde las raíces de las plantas permanecen parcialmente sumergidas para absorber agua y nutrientes. Luego, la solución retorna al depósito, donde vuelve a ser utilizada, formando un <strong>circuito cerrado de recirculación</strong>.
+          <br><br>
+          Este funcionamiento permite <strong>reducir significativamente el consumo de agua</strong> en comparación con los métodos de cultivo tradicionales, ya que la solución nutritiva se reutiliza continuamente. Además, los períodos de circulación y descanso favorecen la <strong>oxigenación de las raíces</strong> y del agua almacenada en el sistema.
         </div>
 
         <p class="pane-body" style="margin-top:0.25rem;">Tocá cada etapa del ciclo para ver qué ocurre.</p>
@@ -69,40 +79,40 @@
           <div class="nft-step" data-sensor="deposito" onclick="selectStep(this)">
             <div class="nft-step-num">1</div>
             <div class="nft-step-content">
-              <p class="nft-step-title">Preparación del depósito</p>
-              <div class="nft-step-body">La solución nutritiva se mezcla en el reservorio. El sensor EC verifica la concentración de nutrientes y el DS18B20 controla la temperatura antes de iniciar la circulación.</div>
+              <p class="nft-step-title">Preparación de la solución nutritiva</p>
+              <div class="nft-step-body">La solución nutritiva se almacena en el tanque principal del sistema. Este depósito también recibe los aportes de los reservorios auxiliares, que contienen distintos aditivos y pueden dosificarse mediante mini bombas sumergibles para ajustar la composición de la mezcla según las necesidades del cultivo.</div>
             </div>
           </div>
 
           <div class="nft-step" data-sensor="bomba" onclick="selectStep(this)">
             <div class="nft-step-num">2</div>
             <div class="nft-step-content">
-              <p class="nft-step-title">Bombeo a los canales</p>
-              <div class="nft-step-body">La bomba sumergible eleva la solución hasta la cabecera de los canales inclinados. El caudalímetro confirma que el flujo es el correcto. El controlador gestiona la bomba mediante relé con temporización no bloqueante.</div>
+              <p class="nft-step-title">Distribución hacia los canales</p>
+              <div class="nft-step-body">Cuando el sistema inicia un ciclo de riego, la bomba principal impulsa la solución nutritiva hacia los canales de cultivo. Durante este proceso, un caudalímetro supervisa el flujo de agua para verificar que la circulación sea la adecuada, mientras que el Arduino Mega 2560 controla el funcionamiento de la bomba.</div>
             </div>
           </div>
 
           <div class="nft-step" data-sensor="canal" onclick="selectStep(this)">
             <div class="nft-step-num">3</div>
             <div class="nft-step-content">
-              <p class="nft-step-title">Lámina sobre las raíces</p>
-              <div class="nft-step-body">La solución baja por gravedad formando la fina lámina o "film". La parte inferior de las raíces toca el agua; la superior respira el aire, sin necesidad de aireadores adicionales.</div>
+              <p class="nft-step-title">Nutrición de las plantas</p>
+              <div class="nft-step-body">Dentro de los canales, las raíces absorben el agua y los nutrientes necesarios para el crecimiento de las plantas. Su disposición permite mantener una zona en contacto con la solución nutritiva y otra expuesta al aire, favoreciendo la oxigenación del sistema radicular.</div>
             </div>
           </div>
 
           <div class="nft-step" data-sensor="retorno" onclick="selectStep(this)">
             <div class="nft-step-num">4</div>
             <div class="nft-step-content">
-              <p class="nft-step-title">Retorno y reciclado</p>
-              <div class="nft-step-body">El excedente cae al depósito por el extremo inferior de cada canal. El ciclo se repite indefinidamente. El sistema consume hasta un 90 % menos de agua que el cultivo en suelo.</div>
+              <p class="nft-step-title">Dosificación automática de aditivos</p>
+              <div class="nft-step-body">Los reservorios auxiliares permiten incorporar nutrientes o correctores específicos a la solución principal cuando es necesario. Cada depósito cuenta con una bomba independiente que facilita una dosificación controlada y precisa.</div>
             </div>
           </div>
 
           <div class="nft-step" data-sensor="telemetria" onclick="selectStep(this)">
             <div class="nft-step-num">5</div>
             <div class="nft-step-content">
-              <p class="nft-step-title">Telemetría en tiempo real</p>
-              <div class="nft-step-body">Cada segundo, el microcontrolador emite un objeto JSON con todos los valores de sensores y el estado de los actuadores. Esto permite registrar el historial del cultivo y detectar anomalías.</div>
+              <p class="nft-step-title">Monitoreo y control</p>
+              <div class="nft-step-body">Los sensores instalados en el sistema registran variables relevantes como temperatura, humedad, pH, y conductividad eléctrica. Un Raspberry Pi 4 solicita periódicamente esta información al Arduino Mega 2560 para procesarla, almacenarla y mostrarla en la interfaz de monitoreo.</div>
             </div>
           </div>
 
@@ -111,7 +121,6 @@
 
       <!-- ── SENSORES ── -->
       <div class="pane" id="pane-sensores">
-        <p class="pane-subtitle">§ 02 — Instrumentación</p>
         <p class="pane-title">Sensores del sistema</p>
         <p class="pane-body">Seleccioná un sensor para ver detalles y resaltar su ubicación en la simulación.</p>
 
@@ -216,7 +225,6 @@
 
       <!-- ── ACTUADORES ── -->
       <div class="pane" id="pane-actuadores">
-        <p class="pane-subtitle">§ 03 — Control</p>
         <p class="pane-title">Actuadores del sistema</p>
         <p class="pane-body">Elementos que el controlador comanda para gestionar el ambiente y la circulación.</p>
 
@@ -303,19 +311,13 @@
       </div>
 
     </div><!-- /panes -->
-
-    <div class="side-infobar">
-      <span class="side-infobar-text">LAHI 4.0 · Visualizador educativo</span>
-      <span class="side-infobar-active" id="footer-active"></span>
-    </div>
-
   </aside>
 
   <!-- ══ PAGE FOOTER ══ -->
   <footer class="page-footer">
     <div class="footer-logos">
-      <div class="logo-placeholder logo-utn" title="Logo UTN">UTN</div>
-      <div class="logo-placeholder logo-giedii" title="Logo GIEDII">GIEDII</div>
+      <img class="footer-logo footer-logo-utn" src="logo-utn.png" alt="UTN" title="Universidad Tecnológica Nacional">
+      <img class="footer-logo footer-logo-giedii" src="logo-giedi.png" alt="GIEDI" title="GIEDI">
     </div>
     <div class="footer-sep"></div>
     <p class="footer-text">

@@ -6,7 +6,7 @@
   --panel:   #fff;
   --soil:    #1e1a14;
   --bark:    #3d3025;
-  --moss:    #3a5c38;
+  --moss:    #3fa83c;
   --sage:    #6e9469;
   --leaf:    #a8c59f;
   --sand:    #c4b49a;
@@ -65,9 +65,24 @@ html, body {
   padding: 0 1.25rem;
   gap: 1.25rem;
   background: var(--chrome);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
   z-index: 10;
 }
+.topbar-home-link {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.topbar-home-link:hover { opacity: 1; transform: scale(1.06); }
+
+.topbar-icon {
+  height: 52px;
+  width: auto;
+  display: block;
+  mix-blend-mode: screen;
+}
+
 .topbar-brand {
   font-family: var(--serif);
   font-style: italic;
@@ -96,8 +111,30 @@ html, body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.theme-toggle {
+.topbar-dashboard-btn {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.65rem;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.topbar-dashboard-btn:hover {
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.theme-toggle {
+  margin-left: 0;
   background: none;
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: var(--radius);
@@ -155,6 +192,58 @@ html, body {
 .viz-overlay-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--leaf); flex-shrink: 0; }
 .viz-overlay-text { font-family: var(--mono); font-size: 0.82rem; color: var(--leaf); white-space: nowrap; }
 
+/* help button */
+.viz-help {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 5;
+}
+.viz-help-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--moss);
+  color: #fff;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  line-height: 1;
+}
+.viz-help-btn:hover { background: #52c44e; transform: scale(1.08); }
+.viz-help-btn.open  { background: #52c44e; }
+
+.viz-help-tooltip {
+  position: absolute;
+  bottom: calc(100% + 0.6rem);
+  right: 0;
+  width: 220px;
+  background: rgba(22,32,26,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(168,197,159,0.2);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.85rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.viz-help:hover .viz-help-tooltip,
+.viz-help-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 /* ── SIDE PANEL ── */
 .side {
   grid-column: 2;
@@ -162,7 +251,7 @@ html, body {
   display: flex;
   flex-direction: column;
   background: var(--panel);
-  border-left: 1px solid var(--fog);
+  border-left: none;
   overflow: hidden;
   position: relative;
 }
@@ -170,7 +259,7 @@ html, body {
 /* tab strip */
 .tabs {
   display: flex;
-  border-bottom: 1px solid var(--fog);
+  background: var(--chrome);
   flex-shrink: 0;
 }
 .tab {
@@ -178,18 +267,18 @@ html, body {
   padding: 0.75rem 0.25rem;
   font-family: var(--mono);
   font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--sand);
+  color: rgba(255,255,255,0.35);
   text-align: center;
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
   transition: color 0.2s, border-color 0.2s;
   user-select: none;
   white-space: nowrap;
 }
-.tab:hover { color: var(--bark); }
+.tab:hover { color: rgba(255,255,255,0.7); }
 .tab.active { color: var(--moss); border-bottom-color: var(--moss); }
 
 /* panes */
@@ -307,14 +396,11 @@ html, body {
 
 /* NFT explanation */
 .nft-intro {
-  background: var(--chrome);
-  color: rgba(255,255,255,0.85);
-  padding: 1rem 1.1rem;
+  color: var(--bark);
   font-size: 0.78rem;
   line-height: 1.8;
-  border-radius: var(--radius);
 }
-.nft-intro strong { color: var(--leaf); font-weight: 500; }
+.nft-intro strong { color: var(--moss); font-weight: 500; }
 
 .nft-steps { display: flex; flex-direction: column; gap: 1px; background: var(--fog); margin-top: 0.5rem; }
 .nft-step {
@@ -333,7 +419,7 @@ html, body {
   font-family: var(--serif);
   font-size: 1.35rem;
   font-weight: 600;
-  color: var(--fog);
+  color: var(--bark);
   line-height: 1;
   flex-shrink: 0;
   width: 28px;
@@ -392,28 +478,23 @@ html, body {
 .footer-logos {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
-.logo-placeholder {
-  border: 1px dashed rgba(255,255,255,0.18);
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--mono);
-  font-size: 0.48rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
+.footer-logo {
+  display: block;
+  object-fit: contain;
   flex-shrink: 0;
 }
-.logo-utn {
-  width: 36px;
-  height: 36px;
+.footer-logo-utn {
+  height: 34px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
 }
-.logo-giedii {
-  width: 52px;
-  height: 36px;
+.footer-logo-giedii {
+  height: 60px;
+  width: auto;
+  opacity: 0.85;
 }
 .footer-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.08); flex-shrink: 0; }
 .footer-text {

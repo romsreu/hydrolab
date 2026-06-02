@@ -1,3 +1,26 @@
+// ── Favicon invertido ──
+(function() {
+  var link = document.querySelector('link[rel="icon"]');
+  if (!link) return;
+  var img = new Image();
+  img.onload = function() {
+    var canvas = document.createElement('canvas');
+    canvas.width  = img.naturalWidth  || 64;
+    canvas.height = img.naturalHeight || 64;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < data.data.length; i += 4) {
+      data.data[i]     = 255 - data.data[i];
+      data.data[i + 1] = 255 - data.data[i + 1];
+      data.data[i + 2] = 255 - data.data[i + 2];
+    }
+    ctx.putImageData(data, 0, 0);
+    link.href = canvas.toDataURL('image/png');
+  };
+  img.src = 'icon.png';
+})();
+
 // ── Theme toggle ──
 (function() {
   var html = document.documentElement;
@@ -16,6 +39,22 @@
     });
   });
 })();
+
+// ── Help tooltip toggle ──
+document.addEventListener('DOMContentLoaded', function() {
+  var helpBtn = document.getElementById('viz-help-btn');
+  var helpTip = document.getElementById('viz-help-tooltip');
+  if (!helpBtn || !helpTip) return;
+  helpBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var open = helpTip.classList.toggle('show');
+    helpBtn.classList.toggle('open', open);
+  });
+  document.addEventListener('click', function() {
+    helpTip.classList.remove('show');
+    helpBtn.classList.remove('open');
+  });
+});
 
 // ── Tabs ──
 function switchTab(el) {
