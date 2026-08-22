@@ -39,8 +39,8 @@ void enviar_json() {
   // Intervalos
   doc["bomba_tanque_principal_tiempo_encendido"] = interval_bomba_on;
   doc["bomba_tanque_principal_tiempo_apagado"]   = interval_bomba_off;
-  doc["led_tiempo_encendido"]              = interval_LED_on;
-  doc["led_tiempo_apagado"]               = interval_LED_off;
+  doc["led_tiempo_encendido"] = programa_activo.led_ciclo_on;
+  doc["led_tiempo_apagado"]   = programa_activo.led_ciclo_off;
   doc["intervalo_control_ph"]              = interval_pH;
   doc["intervalo_control_ce"]              = interval_EC;
   doc["intervalo_control_temperatura_aire"]    = interval_temp;
@@ -49,7 +49,7 @@ void enviar_json() {
 
   // Estados
   doc["led_estante_superior_estado"]       = LED_state;
-  doc["led_estante_iniferior_estado"]      = LED_state;
+  doc["led_estante_inferior_estado"]       = LED_state;
   doc["bomba_tanque_principal_estado"]     = b0_state;
   doc["bomba_tanque_1_estado"]             = b1_state;
   doc["bomba_tanque_2_estado"]             = b2_state;

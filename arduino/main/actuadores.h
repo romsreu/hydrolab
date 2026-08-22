@@ -22,13 +22,15 @@ extern float vol1, vol2, vol3, vol4;
 extern int pulsos1, pulsos2, pulsos3, pulsos4;
 extern int LDRvalue, nivelIluminacion;
 extern unsigned long previousMillis_LED, previousMillis_bomba;
+extern unsigned long previousMillis_fotoperiodo;
+extern bool fase_dia_activa;
 
 void vent_config();
 void bombas_config();
 void LED_config();
 void caudalimetro_config();
 void bombita_on(uint8_t, uint8_t, int&, float&, bool&, float);
-void LED(unsigned long, unsigned long);
+void LED(unsigned long, unsigned long, unsigned long, unsigned long);
 void bomba(unsigned long, unsigned long);
 void vent(bool);
 

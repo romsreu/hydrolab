@@ -15,7 +15,9 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "programas.h"
 
+extern Programa programa_activo;
 extern float temp_value_int, temp_value_ext;
 extern float hum_value_int, hum_value_ext;
 extern float Wtemp0_value, Wtemp1_value;

@@ -1,5 +1,8 @@
 #include "display.h"
 #include "config.h"
+#include "programas.h"
+extern Programa programa_activo;
+
 void showScreen1() {
   String tempStr;
 
@@ -66,11 +69,65 @@ void showScreen4() {
   lcd.setCursor(0, 1);
   lcd.print(valStr);
 
-  valStr = "LED:   " + String(interval_LED_on / 60000) + "/" + String(interval_LED_off / 60000) + " min";
+  valStr = "LED:   " + String(programa_activo.led_ciclo_on / 60000) + "/" + String(programa_activo.led_ciclo_off / 60000) + " min";
   lcd.setCursor(0, 2);
   lcd.print(valStr);
 
   valStr = "Temp:  " + String(interval_temp / 60000) + " min";
   lcd.setCursor(0, 3);
   lcd.print(valStr);
+}
+
+static String fmtTime(unsigned long ms) {
+  unsigned long secs = ms / 1000;
+  unsigned long mins = secs / 60;
+  unsigned long hrs  = mins / 60;
+  char buf[6];
+  if (mins >= 60)
+    sprintf(buf, "%02luh%02lu", hrs, mins % 60);
+  else
+    sprintf(buf, "%02lu:%02lu", mins, secs % 60);
+  return String(buf);
+}
+
+void showScreen5() {
+  unsigned long now = millis();
+  String row;
+
+  // Fila 0: fase día/noche del LED UV, tiempo restante
+  unsigned long fase_dur     = fase_dia_activa ? programa_activo.fase_dia : programa_activo.fase_noche;
+  unsigned long fase_elapsed = now - previousMillis_fotoperiodo;
+  unsigned long fase_rem     = (fase_elapsed < fase_dur) ? fase_dur - fase_elapsed : 0;
+  row = fase_dia_activa ? "LED UV Dia  " : "LED UV Noc  ";
+  row += fmtTime(fase_rem);
+  lcd.setCursor(0, 0);
+  lcd.print(row);
+
+  // Fila 1: ciclo ON/OFF del LED UV (solo en fase día)
+  lcd.setCursor(0, 1);
+  if (fase_dia_activa) {
+    unsigned long ciclo_dur     = LED_state ? programa_activo.led_ciclo_on : programa_activo.led_ciclo_off;
+    unsigned long ciclo_elapsed = now - previousMillis_LED;
+    unsigned long ciclo_rem     = (ciclo_elapsed < ciclo_dur) ? ciclo_dur - ciclo_elapsed : 0;
+    row = LED_state ? "Ciclo ON    " : "Ciclo OFF   ";
+    row += fmtTime(ciclo_rem);
+  } else {
+    row = "LED UV: Apagado     ";
+  }
+  lcd.print(row);
+
+  // Fila 2: bomba principal, tiempo restante
+  unsigned long bomba_dur     = b0_state ? interval_bomba_on : interval_bomba_off;
+  unsigned long bomba_elapsed = now - previousMillis_bomba;
+  unsigned long bomba_rem     = (bomba_elapsed < bomba_dur) ? bomba_dur - bomba_elapsed : 0;
+  row = b0_state ? "Bomba ON    " : "Bomba OFF   ";
+  row += fmtTime(bomba_rem);
+  lcd.setCursor(0, 2);
+  lcd.print(row);
+
+  // Fila 3: ventiladores (reactivos a temperatura, sin timer)
+  row = "Vents: ";
+  row += v1_state ? "ON " : "OFF";
+  lcd.setCursor(0, 3);
+  lcd.print(row);
 }

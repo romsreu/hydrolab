@@ -32,11 +32,11 @@ void vent_config() {
 }
 
 void bombas_config() {
-  pinMode(b1, OUTPUT); // Bombita 1 - pH A
-  pinMode(b2, OUTPUT); // Bombita 2 - pH B
-  pinMode(b3, OUTPUT); // Bombita 3 - Nutrientes 1
-  pinMode(b4, OUTPUT); // Bombita 4 - Nutrientes 2
-  pinMode(b0, OUTPUT); // Bomba principal
+  pinMode(b1, OUTPUT);
+  pinMode(b2, OUTPUT);
+  pinMode(b3, OUTPUT);
+  pinMode(b4, OUTPUT);
+  pinMode(b0, OUTPUT);
 
   digitalWrite(b1, LOW);
   digitalWrite(b2, LOW);
@@ -55,10 +55,13 @@ void LED_config() {
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
 
-  digitalWrite(LED1, HIGH); // HIGH es apagado para el relé sólido
-  digitalWrite(LED2, HIGH);
+  // Inicia encendido (LOW = encendido para relé sólido)
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
+  digitalWrite(v0, HIGH);  // Ventilador de refrigeración LED encendido
 
-  LED_state = 0;
+  LED_state  = 1;
+  fase_dia_activa = true;
 }
 
 void caudalimetro_config() {
@@ -83,26 +86,75 @@ void bombita_on(uint8_t pinBomba, uint8_t pinCaudal, int& pulsos, float& vol, bo
   vol = 10.7;
 }
 
-void LED(unsigned long LED_tOn, unsigned long LED_tOff) {
+/********************************************************************
+ *  LED — fotoperíodo con ciclo interno                            *
+ *                                                                  *
+ *  fase_dia:    duración total de la fase con luz                 *
+ *  fase_noche:  duración total de la fase sin luz                 *
+ *  ciclo_on:    tiempo encendido dentro de la fase día            *
+ *  ciclo_off:   tiempo apagado dentro de la fase día              *
+ *                                                                  *
+ *  Comportamiento:                                                 *
+ *  Al encender → fase día → parpadea ciclo_on/ciclo_off           *
+ *  Al cumplir fase_dia → apagado fijo durante fase_noche          *
+ *  Al cumplir fase_noche → vuelve a fase día                      *
+ ********************************************************************/
+
+void LED(unsigned long fase_dia, unsigned long fase_noche,
+         unsigned long ciclo_on, unsigned long ciclo_off) {
+
   unsigned long currentMillis = millis();
 
-  if (LED_state == LOW && currentMillis - previousMillis_LED >= LED_tOff) {
-    digitalWrite(LED1, LOW);
-    digitalWrite(LED2, LOW);
-    digitalWrite(v0, HIGH);
-    LED_state = HIGH;
-    previousMillis_LED = currentMillis;
-    LDRvalue = analogRead(LDRpin);
-    nivelIluminacion = LDRvalue / 950 * 100;
+  if (fase_dia_activa) {
+    // --- Verificar si terminó la fase día ---
+    if (currentMillis - previousMillis_fotoperiodo >= fase_dia) {
+      previousMillis_fotoperiodo = currentMillis;
+      previousMillis_LED         = currentMillis;
+      fase_dia_activa            = false;
 
-  } else if (LED_state == HIGH && currentMillis - previousMillis_LED >= LED_tOn) {
-    digitalWrite(LED1, HIGH);
-    digitalWrite(LED2, HIGH);
-    digitalWrite(v0, LOW);
-    LED_state = LOW;
-    previousMillis_LED = currentMillis;
-    LDRvalue = analogRead(LDRpin);
-    nivelIluminacion = LDRvalue / 950 * 100;
+      // Apagar LEDs al entrar en noche
+      digitalWrite(LED1, HIGH);
+      digitalWrite(LED2, HIGH);
+      digitalWrite(v0, LOW);
+      LED_state = 0;
+      LDRvalue  = analogRead(LDRpin);
+      return;
+    }
+
+    // --- Ciclo interno ON/OFF dentro de la fase día ---
+    if (LED_state == 0 && currentMillis - previousMillis_LED >= ciclo_off) {
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, LOW);
+      digitalWrite(v0, HIGH);
+      LED_state        = 1;
+      previousMillis_LED = currentMillis;
+      LDRvalue         = analogRead(LDRpin);
+      nivelIluminacion = LDRvalue / 950 * 100;
+
+    } else if (LED_state == 1 && currentMillis - previousMillis_LED >= ciclo_on) {
+      digitalWrite(LED1, HIGH);
+      digitalWrite(LED2, HIGH);
+      digitalWrite(v0, LOW);
+      LED_state        = 0;
+      previousMillis_LED = currentMillis;
+      LDRvalue         = analogRead(LDRpin);
+      nivelIluminacion = LDRvalue / 950 * 100;
+    }
+
+  } else {
+    // --- Fase noche: esperar y volver al día ---
+    if (currentMillis - previousMillis_fotoperiodo >= fase_noche) {
+      previousMillis_fotoperiodo = currentMillis;
+      previousMillis_LED         = currentMillis;
+      fase_dia_activa            = true;
+
+      // Encender LEDs al iniciar nuevo día
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, LOW);
+      digitalWrite(v0, HIGH);
+      LED_state = 1;
+      LDRvalue  = analogRead(LDRpin);
+    }
   }
 }
 
@@ -110,11 +162,11 @@ void bomba(unsigned long bomba_tOn, unsigned long bomba_tOff) {
   unsigned long currentMillis = millis();
 
   if (b0_state == HIGH && currentMillis - previousMillis_bomba >= bomba_tOn) {
-    digitalWrite(b0, HIGH); // Apagar la bomba
+    digitalWrite(b0, HIGH);
     b0_state = LOW;
     previousMillis_bomba = currentMillis;
   } else if (b0_state == LOW && currentMillis - previousMillis_bomba >= bomba_tOff) {
-    digitalWrite(b0, LOW); // Encender la bomba
+    digitalWrite(b0, LOW);
     b0_state = HIGH;
     previousMillis_bomba = currentMillis;
   }
