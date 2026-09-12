@@ -9,7 +9,3 @@ Está montado dentro de un armario metálico autocontenido con dos niveles de cu
 El proyecto utiliza Arduino y Raspberry Pi para la automatización, adquisición de datos y control del sistema, incluyendo monitoreo remoto, almacenamiento histórico de variables y operación manual o automática de actuadores.
 
 Este repositorio reúne el código fuente, la documentación técnica, esquemas electrónicos y herramientas relacionadas con el desarrollo del laboratorio hidropónico realizado en la UTN Facultad Regional Santa Fe.
-
-## Modelo digital y visualización
-
-El proyecto también incluye un [modelo digital interactivo](https://github.com/romsreu/hydrolab-twin) creado con Onshape y Godot.
